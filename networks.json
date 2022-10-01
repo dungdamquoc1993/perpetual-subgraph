@@ -1,0 +1,12 @@
+{
+  "goerli": {
+    "Vault": {
+      "address": "0x5a4d12aa8c88b5254ef5cd6e1815291e11d2c421",
+      "startBlock": 7298400
+    },
+    "OrderBook": {
+      "address": "0x60d84f26a30da10c1495baeb622093bebe65572f",
+      "startBlock": 7298400
+    }
+  }
+}

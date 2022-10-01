@@ -1,0 +1,17 @@
+{
+  "name": "perpetual-subgraph",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ gemini18/perpetual",
+    "create-local": "graph create --node http://localhost:8020/ gemini18/perpetual",
+    "remove-local": "graph remove --node http://localhost:8020/ gemini18/perpetual",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 gemini18/perpetual"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.30.4",
+    "@graphprotocol/graph-ts": "0.27.0",
+    "@protofire/subgraph-toolkit": "^0.1.2"
+  }
+}

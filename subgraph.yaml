@@ -1,0 +1,61 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Vault
+    network: goerli
+    source:
+      abi: Vault
+      address: "0x5a4d12aa8c88b5254ef5cd6e1815291e11d2c421"
+      startBlock: 7298400
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Market
+        - Token
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: TokenWhitelisted(address)
+          handler: handleTokenWhitelisted
+        - event: IncreasePosition(bytes32,address,address,address,uint256,uint256,uint8,uint256)
+          handler: handleIncreasePosition
+        - event: DecreasePosition(bytes32,address,address,address,uint256,uint256,uint8,uint256)
+          handler: handleIncreasePosition
+        - event: UpdatePosition(bytes32,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleIncreasePosition
+        - event: ClosePosition(bytes32,uint256,uint256,uint256,uint256,uint256)
+          handler: handleIncreasePosition
+        - event: LiquidatePosition(bytes32,address,address,address,uint8,uint256,uint256,uint256,uint256)
+          handler: handleIncreasePosition
+      file: src/vault.ts
+  - kind: ethereum
+    name: OrderBook
+    network: goerli
+    source:
+      abi: OrderBook
+      address: "0x60d84f26a30da10c1495baeb622093bebe65572f"
+      startBlock: 7298400
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Order
+      abis:
+        - name: OrderBook
+          file: ./abis/OrderBook.json
+      eventHandlers:
+        - event: OrderPlaced(indexed bytes32)
+          handler: handleOrderPlaced
+        - event: OrderCancelled(indexed bytes32)
+          handler: handleOrderCancelled
+        - event: OrderExecuted(indexed bytes32)
+          handler: handleOrderExecuted
+      file: ./src/orderbook.ts

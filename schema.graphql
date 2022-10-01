@@ -1,0 +1,114 @@
+enum OrderStatus {
+  PLACED
+  CANCELLED
+  EXECUTED
+}
+
+enum OrderType {
+  INCREASE
+  DECREASE
+}
+
+enum PositionStatus {
+  OPEN
+  CLOSED
+  LIQUIDATED
+}
+
+# Vault and markets
+type Vault @entity {
+  id: ID!
+  address: String!
+  markets: [Market!]! @derivedFrom(field: "vault")
+}
+
+type Market @entity {
+  id: ID! # use token address for ID
+  indexToken: Token!
+  orders: [Order!]! @derivedFrom(field: "market")
+  positions: [Position!]! @derivedFrom(field: "market")
+  vault: Vault
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  decimals: Int!
+  price: BigInt!
+}
+
+# Orders
+type Order @entity {
+  id: ID!
+  module: Bytes!
+  owner: Bytes!
+  collateralToken: Bytes!
+  sizeChanged: BigInt!
+  collateralAmount: BigInt!
+  executionFee: BigInt!
+  submissionBlock: BigInt!
+  submissionTimestamp: BigInt!
+  executionTimestamp: BigInt!
+  side: Int!
+  orderType: OrderType!
+  data: Bytes!
+  status: OrderStatus!
+  limitOrder: LimitOrder @derivedFrom(field: "order")
+  marketOrder: MarketOrder @derivedFrom(field: "order")
+  market: Market!
+}
+
+type LimitOrder @entity {
+  id: ID! # derived from order id [order_id]-limit
+  order: Order!
+  limitPrice: BigInt!
+  triggerAboveThreshold: Boolean!
+}
+
+type MarketOrder @entity {
+  id: ID! # [order_id]-market
+  order: Order!
+  acceptablePrice: BigInt!
+}
+
+type Position @entity {
+  id: ID!
+  owner: Bytes!
+  side: Int!
+  collateralToken: Bytes!
+  size: BigInt!
+  collateralValue: BigInt!
+  leverage: BigInt!
+  reserveAmount: BigInt!
+  entryPrice: BigInt!
+  liquidatedPrice: BigInt!
+  entryInterestRate: BigInt!
+  status: PositionStatus!
+  createAtTimeStamp: BigInt!
+  market: Market!
+}
+
+# Orderbook style entities to make matching order more efficient
+# trade direction:
+# - increase long position/decrease short position = bid
+# - decrease long position/increase short position = ask
+enum TradeDirection {
+  ASK
+  BID
+}
+
+enum OrderBookRowStatus {
+  OPEN
+  FILLED
+  CANCELLED
+}
+
+type OrderBookRow @entity {
+  id: ID!
+  triggerPrice: BigInt!
+  direction: TradeDirection!
+  createdAt: BigInt!
+  status: OrderBookRowStatus!
+  market: String!
+  module: String!
+}
